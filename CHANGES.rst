@@ -5,6 +5,10 @@ Changelog
 1.0b2 (unreleased)
 ------------------
 
+- Use dateutil.parse to read modified dates on import for more flexibility. datetime.strptime
+  breaks on timezone offset variants.
+  [fredvd]
+
 - Support setting values with ``factory_kwargs`` when creating instances during import.
   This can be used to set values that need to be there during subscribers to IObjectAddedEvent.
   [pbauer]

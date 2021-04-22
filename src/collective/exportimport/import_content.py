@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
+from dateutil import parser
 from plone import api
 from plone.api.exc import InvalidParameterError
 from plone.i18n.normalizer.interfaces import IIDNormalizer
@@ -212,7 +213,11 @@ class ImportContent(BrowserView):
             # set modified-date as a custom attribute as last step
             modified = item.get("modified", item.get("modification_date", None))
             if modified:
-                modified_data = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S%z")
+                #modified_data = datetime.strptime(modified, "%Y-%m-%dT%H:%M:%S%z")
+                # import exported Plone 4 AT content can have +0X:00 timzeon notation which
+                # chokes strptime on at least Python2.7 with an "unknown %z" backtrace
+                modified_data = parser.parse(modified)
+
                 modification_date = DateTime(modified_data)
                 new.modification_date = modification_date
                 new.modification_date_migrated = modification_date
