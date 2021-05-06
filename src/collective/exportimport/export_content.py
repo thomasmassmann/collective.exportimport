@@ -33,6 +33,8 @@ import os
 import pkg_resources
 import six
 
+from dateutil import parser
+
 try:
     pkg_resources.get_distribution("Products.Archetypes")
 except pkg_resources.DistributionNotFound:
@@ -288,6 +290,16 @@ class ExportContent(BrowserView):
         item = migrate_field(item, 'contactEmail', 'contact_email')
         item = migrate_field(item, 'contactName', 'contact_name')
         item = migrate_field(item, 'contactPhone', 'contact_phone')
+
+        # Remove effective date if item has expires date before effective date
+        # Maybe this needs more magic to work, to set the effective date a day
+        # before the expires and keep it.
+
+        if item['expires'] and item['effective']:
+            expires = parser([item['expires']])
+            effective = parser([item['effective']])
+            if effective and expires and (effective >= expires):
+                item.pop('effective')
 
         # 4. Fix issue with AT Text fields
         # This is done in the ATTextFieldSerializer

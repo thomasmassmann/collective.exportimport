@@ -60,6 +60,7 @@ setup(
         "plone.restapi",
         "hurry.filesize",
         "ijson",
+        "python-dateutil"
     ],
     extras_require={
         "test": [
